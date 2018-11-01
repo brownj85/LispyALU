@@ -1,4 +1,4 @@
-module instruction_stack(in, out, push, pop, clk, reset_n);
+module instruction_stack(in, out, push, pop, current_state, clk, reset_n);
 
 	input[23:0] in;
 
@@ -9,18 +9,54 @@ module instruction_stack(in, out, push, pop, clk, reset_n);
 	input clk;
 	input reset_n;
 
+	output[3:0]  current_state;
+
+
 	reg[23:0] memory[255:0];
 
 	reg[7:0] stack_ptr;
 
-	reg[2:0] current_state;
-	reg[2:0] next_state;
+	wire incr, decr, read, write;
+	
+	control ctrl(push, pop, incr, decr, read, write, clk, reset_n);
 
-	localparam 	HOLD = 3'd0,
-			PUSH_0 = 3'd1,
-			PUSH_1 = 3'd2,
-			POP_0 = 3'd3,
-			POP_1 = 3'd4;
+	always@(posedge clk)
+	begin
+		if(!reset_n)
+			out <= 24'b0;
+		else begin
+			if(incr)
+				stack_ptr <= stack_ptr + 1;
+			if(decr)
+				stack_ptr <= stack_ptr - 1;
+			if(read)
+				out <= memory[stack_ptr];
+			if(write)
+				memory[stack_ptr] <= in;
+		end
+	end
+
+endmodule
+
+
+module control(push, pop, incr, decr, read, write, clk, reset_n);
+	
+	input push, pop;
+
+	reg[3:0] current_state;
+	reg[3:0] next_state;
+	
+	input clk, reset_n;
+
+	localparam	HOLD = 4'b0000,
+			PUSH_0 = 4'b1000,
+			PUSH_1 = 4'b0001,
+			POP_0 = 4'b0010,
+			POP_1 = 4'b0100;
+
+	output incr, decr, read, write;
+
+	assign {incr, decr, read, write} = current_state;
 
 	//state table
 	always@(*)
@@ -55,26 +91,21 @@ module instruction_stack(in, out, push, pop, clk, reset_n);
 			default: next_state = HOLD;
 		endcase
 	end
-	
-	always@(posedge clk, negedge reset_n) 
+
+	always@(posedge clk) 
 	begin
 		if(!reset_n) 
-			stack_ptr <= 8'b0;
-		else begin
-			case(current_state)
-				PUSH_0: stack_ptr <= stack_ptr + 1;
-				PUSH_1: memory[stack_ptr] <= in;
-				POP_0: out <= memory[stack_ptr];
-				POP_1: stack_ptr <= stack_ptr - 1;
-				default: out <= 24'b0;
-			endcase
-		end
+			current_state <= HOLD;
+		else 
+			current_state <= next_state;
 	end
 
-endmodule
+	endmodule
+	
 
 
-				
+
+
 			
 
 
