@@ -1,17 +1,23 @@
 from myhdl import *
 
-st = enum('ERR', 'OP', 'VAL', 'START', 'WAIT', 'RST')
+expect_st = enum('ST0', 'OP', 'A', 'B', 'CLOSE')
+st = enum('ERR', 'OP', 'VAL_WAIT', 'VAL', 'START', 'WAIT', 'RST')
 
 @block
 def lexer(go, ret, store, char_in, inst, lut_out, 
-             mem_in, mem_addr, clock, reset_n, err_flag):
-
+             mem_addr,  clock, reset_n, err_flag,
+             to_converter, conv_push)
+    
     state = Signal(st.START)
     state_next = Signal(st.START)
+
+    expect_state = Signal(st.START)
+    expect_state_next = Signal(st.OP)
 
     convert_buffer = Signal(intbv(0)[16:0])
 
     state_ctr = Signal(intbv(0))[3:0]
+    
     op_valid = Signal(bool(0))
     is_digit = Signal(bool(0))
 
@@ -22,11 +28,9 @@ def lexer(go, ret, store, char_in, inst, lut_out,
     i_mask_buffer = Signal(intbv(0)[2:0])
 
     inst_int = ConcatSignal(i_mask_buffer, i_body_buffer)
-    convert_buffer = Signal(intbv(0)[16:0])
 
     @always_comb
     def struct():
-        mem_in.next = convert_buffer
         op_valid.next = lut_out[0] or lut_out[1]
         is_digit.next = lut_out[2]
         inst.next = inst_int
@@ -61,14 +65,11 @@ def lexer(go, ret, store, char_in, inst, lut_out,
 
         if state == st.START:
             err_flag.next = 0
-
             ret.next = 0
             store.next = 0
-            convert_buffer.next = 0
 
         elif state == st.VAL:
-            
-            convert_buffer.next = convert_buffer + (char_buffer - 48) * (10 ** state_ctr)
+        
             i_body_buffer.next = mem_addr
             i_mask_buffer.next = lut_buffer[2:0]
             
