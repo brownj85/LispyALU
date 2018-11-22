@@ -15,7 +15,7 @@ def converter(char_in, lut_out,
 
     sign = Signal(bool(0))
 
-    ctr = Signal(intbv(0, 0, 5))
+    ctr = Signal(intbv(0, 0, 6))
 
     digit = char_in(4, 0)
     is_digit = lut_out(2)
@@ -69,7 +69,7 @@ def converter(char_in, lut_out,
                 digit_buffer[i].next = 0
             elif i == ctr:
                 digit_buffer[ctr].next = digit
-            else:
+            elif is_digit:
                 digit_buffer[i].next = (digit_buffer[i] << 3) + (digit_buffer[i] << 1)
 
         lut_buffer.next = lut_out[2]
