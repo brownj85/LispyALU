@@ -121,8 +121,8 @@ module keyboard_tracker #(parameter PULSE_OR_HOLD = 0) (
 	 inout PS2_CLK,
 	 inout PS2_DAT,
 	 
-	 output w, a, s, d,
-	 output left, right, up, down,
+	 output zero, one, two, three, four, five, six, seven, eight, nine,
+	 output left_bracket, right_bracker, minus,
 	 output space, enter
 	 );
 	 
@@ -380,22 +380,27 @@ module keyboard_interface_test_mode0(
 	 output [9:0] LEDR
 	 );
 	 
-	 keyboard_tracker #(.PULSE_OR_HOLD(0)) tester(
-	     .clock(CLOCK_50),
-		  .reset(KEY[0]),
-		  .PS2_CLK(PS2_CLK),
-		  .PS2_DAT(PS2_DAT),
-		  .w(LEDR[4]),
-		  .a(LEDR[5]),
-		  .s(LEDR[6]),
-		  .d(LEDR[7]),
-		  .left(LEDR[0]),
-		  .right(LEDR[1]),
-		  .up(LEDR[2]),
-		  .down(LEDR[3]),
-		  .space(LEDR[8]),
-		  .enter(LEDR[9])
-		  );
+// 	 keyboard_tracker #(.PULSE_OR_HOLD(0)) tester(
+// 	     .clock(CLOCK_50),
+// 		  .reset(KEY[0]),
+// 		  .PS2_CLK(PS2_CLK),
+// 		  .PS2_DAT(PS2_DAT),
+// 		  .zero(LEDR[4]),
+// 		  .one(LEDR[5]),
+// 		  .two(LEDR[6]),
+// 		  .three(LEDR[7]),
+// 		  .four(LEDR[7]),
+// 		  .five(LEDR[7]),
+// 		  .six(LEDR[7]),
+// 		  .seven(LEDR[7]),
+// 		  .eight(LEDR[7]),
+// 		  .nine(LEDR[7]),
+// 		  .left_bracket(LEDR[0]),
+// 		  .right_bracket(LEDR[1]),
+// 		  .minus(LEDR[3]),
+// 		  .space(LEDR[8]),
+// 		  .enter(LEDR[9])
+// 		  );
 endmodule
 
 
@@ -414,89 +419,89 @@ module keyboard_interface_test_mode1(
 	 output [9:0] LEDR
 	 );
 	 
-	 // Wires representing direct output from the keyboard controller.
-	 wire w_pulse,
-	      a_pulse,
-			s_pulse,
-			d_pulse,
-			left_pulse,
-			right_pulse,
-			up_pulse,
-			down_pulse,
-			space_pulse,
-			enter_pulse;
+	 // // Wires representing direct output from the keyboard controller.
+	 // wire w_pulse,
+	 //      a_pulse,
+		// 	s_pulse,
+		// 	d_pulse,
+		// 	left_pulse,
+		// 	right_pulse,
+		// 	up_pulse,
+		// 	down_pulse,
+		// 	space_pulse,
+		// 	enter_pulse;
 			
-    // Registers holding the values displayed on the LEDs.
-    reg  w_tot,
-	      a_tot,
-			s_tot,
-			d_tot,
-			left_tot,
-			right_tot,
-			up_tot,
-			down_tot,
-			space_tot,
-			enter_tot;
+  //   // Registers holding the values displayed on the LEDs.
+  //   reg  w_tot,
+	 //      a_tot,
+		// 	s_tot,
+		// 	d_tot,
+		// 	left_tot,
+		// 	right_tot,
+		// 	up_tot,
+		// 	down_tot,
+		// 	space_tot,
+		// 	enter_tot;
 
-    assign LEDR[4] = w_tot;
-	 assign LEDR[5] = a_tot;
-	 assign LEDR[6] = s_tot;
-	 assign LEDR[7] = d_tot;
-	 assign LEDR[0] = left_tot;
-	 assign LEDR[1] = right_tot;
-	 assign LEDR[2] = up_tot;
-	 assign LEDR[3] = down_tot;
-	 assign LEDR[8] = space_tot;
-	 assign LEDR[9] = enter_tot;
+  //   assign LEDR[4] = w_tot;
+	 // assign LEDR[5] = a_tot;
+	 // assign LEDR[6] = s_tot;
+	 // assign LEDR[7] = d_tot;
+	 // assign LEDR[0] = left_tot;
+	 // assign LEDR[1] = right_tot;
+	 // assign LEDR[2] = up_tot;
+	 // assign LEDR[3] = down_tot;
+	 // assign LEDR[8] = space_tot;
+	 // assign LEDR[9] = enter_tot;
 	 
-	 keyboard_tracker #(.PULSE_OR_HOLD(1)) tester_mode1(
-	     .clock(CLOCK_50),
-		  .reset(KEY[0]),
-		  .PS2_CLK(PS2_CLK),
-		  .PS2_DAT(PS2_DAT),
-		  .w(w_pulse),
-		  .a(a_pulse),
-		  .s(s_pulse),
-		  .d(d_pulse),
-		  .left(left_pulse),
-		  .right(right_pulse),
-		  .up(up_pulse),
-		  .down(down_pulse),
-		  .space(space_pulse),
-		  .enter(enter_pulse)
-		  );
+	 // keyboard_tracker #(.PULSE_OR_HOLD(1)) tester_mode1(
+	 //     .clock(CLOCK_50),
+		//   .reset(KEY[0]),
+		//   .PS2_CLK(PS2_CLK),
+		//   .PS2_DAT(PS2_DAT),
+		//   .w(w_pulse),
+		//   .a(a_pulse),
+		//   .s(s_pulse),
+		//   .d(d_pulse),
+		//   .left(left_pulse),
+		//   .right(right_pulse),
+		//   .up(up_pulse),
+		//   .down(down_pulse),
+		//   .space(space_pulse),
+		//   .enter(enter_pulse)
+		//   );
 
-    always @(posedge CLOCK_50) begin
-	     if (~KEY[0]) begin
-		      // Reset signal
-		      w_tot <= 1'b0;
-				a_tot <= 1'b0;
-				s_tot <= 1'b0;
-				d_tot <= 1'b0;
+  //   always @(posedge CLOCK_50) begin
+	 //     if (~KEY[0]) begin
+		//       // Reset signal
+		//       w_tot <= 1'b0;
+		// 		a_tot <= 1'b0;
+		// 		s_tot <= 1'b0;
+		// 		d_tot <= 1'b0;
 				
-				left_tot  <= 1'b0;
-				right_tot <= 1'b0;
-				up_tot    <= 1'b0;
-				down_tot  <= 1'b0;
+		// 		left_tot  <= 1'b0;
+		// 		right_tot <= 1'b0;
+		// 		up_tot    <= 1'b0;
+		// 		down_tot  <= 1'b0;
 				
-				space_tot <= 1'b0;
-				enter_tot <= 1'b0;
-		  end
-		  else begin
-		      // State display wires (xxx_tot) flip values when their
-				// corresponding key is pressed.
-	         w_tot <= w_tot + w_pulse;
-		      a_tot <= a_tot + a_pulse;
-		      s_tot <= s_tot + s_pulse;
-		      d_tot <= d_tot + d_pulse;
+		// 		space_tot <= 1'b0;
+		// 		enter_tot <= 1'b0;
+		//   end
+		//   else begin
+		//       // State display wires (xxx_tot) flip values when their
+		// 		// corresponding key is pressed.
+	 //         w_tot <= w_tot + w_pulse;
+		//       a_tot <= a_tot + a_pulse;
+		//       s_tot <= s_tot + s_pulse;
+		//       d_tot <= d_tot + d_pulse;
 				
-		      left_tot <= left_tot + left_pulse;
-		      right_tot <= right_tot + right_pulse;
-		      up_tot <= up_tot + up_pulse;
-		      down_tot <= down_tot + down_pulse;
+		//       left_tot <= left_tot + left_pulse;
+		//       right_tot <= right_tot + right_pulse;
+		//       up_tot <= up_tot + up_pulse;
+		//       down_tot <= down_tot + down_pulse;
 				
-		      space_tot <= space_tot + space_pulse;
-		      enter_tot <= enter_tot + enter_pulse;
-		  end
-    end
+		//       space_tot <= space_tot + space_pulse;
+		//       enter_tot <= enter_tot + enter_pulse;
+		//   end
+  //   end
 endmodule
