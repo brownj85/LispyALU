@@ -17,8 +17,7 @@ def dec_to_bin_converter(
     digit_buffer = [Signal(intbv(0)) for i  in range(6)]
 
     #state
-    err_st = Signal(bool(0))
-    ctr = Signal(intbv(0, 0, 6))
+    ctr = Signal(intbv(0, 0, 7))
     digit = char_in(4, 0)
 
     @always_comb
@@ -35,16 +34,17 @@ def dec_to_bin_converter(
     def data():
         if reset_n == 0:
             ctr.next = 0
-            err_st.next = 0
-
-        elif err_st:
-            err_flag.next = 1
+            err_flag.next = 0
         
         elif enable:
+            if ctr == 7:
+                err_flag.next = 1
+            
             ctr.next = ctr + 1
 
         else:
             ctr.next = 0
+            err_flag.next = 0
         
         for i in range(6):
             if i > ctr:

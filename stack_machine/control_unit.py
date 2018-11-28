@@ -24,6 +24,7 @@ def control_unit(
         alu_out, 
         alu_done, 
         #
+        err_flag,
         clock, 
         reset_n):
 
@@ -42,6 +43,7 @@ def control_unit(
             alu_go.next = 0
             done.next = 0
             state.next = st.WAIT
+            err_flag.next = 0
 
         elif state == st.WAIT:
             if not pr_stack_empty and go:

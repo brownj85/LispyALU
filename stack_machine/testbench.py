@@ -8,7 +8,7 @@ def testbench(line):
 
     clock = Signal(bool(0))
     reset_n = Signal(bool(1))
-    err_flag = Signal(bool(0))
+    alu_err, cu_err, lex_err, stack_err = (Signal(bool(0)) for i in range(4))
 
     HALF_PERIOD = delay(10)
 
@@ -29,7 +29,7 @@ def testbench(line):
                     push, 
                     pop, 
                     stack_empty, 
-                    err_flag, 
+                    stack_err,
                     clock, 
                     reset_n)
 
@@ -39,7 +39,7 @@ def testbench(line):
             char_in, 
             data_in, 
             push, 
-            err_flag, 
+            lex_err,
             clock, 
             reset_n)
 
@@ -55,7 +55,8 @@ def testbench(line):
             alu_op, 
             alu_out, 
             alu_go, 
-            alu_done, 
+            alu_done,
+            alu_err,
             clock, 
             reset_n)
     
@@ -73,6 +74,7 @@ def testbench(line):
             alu_b,
             alu_out,
             alu_done,
+            cu_err,
             clock,
             reset_n)
 

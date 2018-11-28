@@ -26,8 +26,9 @@ def lexer(
     lut = char_lut(char_in, is_digit, is_op) 
 
     sign = Signal(bool(0))
+    conv_err = Signal(bool(0))
     result = Signal(intbv(0, -2**15, 2**15))
-    convert = dec_to_bin_converter(char_in, sign, result, is_digit, err_flag, clock, reset_n);
+    convert = dec_to_bin_converter(char_in, sign, result, is_digit, conv_err, clock, reset_n);
     
     inst_mask = Signal(intbv(0)[2:0])
     inst_desc = Signal(intbv(0, -2**15, 2**15))

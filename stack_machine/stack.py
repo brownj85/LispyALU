@@ -18,11 +18,11 @@ def program_stack(
         reset_n):
 
     stack = [Signal(intbv(0)[18:0]) for i in range(129)]
-    stack[128] = Signal(intbv(2**17))
+    stack[128] = Signal(intbv(2**17)[18:0])
     
-    stack_ptr = Signal(modbv(128, 0, 255))
+    stack_ptr = Signal(modbv(128, 0, 256))
     
-    size_ctr = Signal(modbv(0, 0, 255))
+    size_ctr = Signal(modbv(0, 0, 256))
 
     @always_comb
     def wires():
@@ -34,6 +34,7 @@ def program_stack(
         if reset_n == 0:
             stack_ptr.next = 128
             size_ctr.next = 0
+            err_flag.next = 0
 
         elif push == 1:
             stack_ptr.next = stack_ptr - 1
